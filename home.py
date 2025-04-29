@@ -249,6 +249,32 @@ with open(os.path.join(here, "pbipy", "__version__.py"), "r", encoding="utf-8") 
 with open("README.md", "r", encoding="utf-") as f:
     readme = f.read()
 
+import os
+import sys
+from shutil import rmtree
+
+from setuptools import find_packages, setup, Command
+from setuptools.command.test import test as TestCommand
+
+setup(
+    name=about["__title__"],
+    version=about["__version__"],
+    description=about["__description__"],
+    long_description=readme,
+    long_description_content_type="text/markdown",
+    author=about["__author__"],
+    author_email=about["__author_email__"],
+    python_requires=">=3.10",
+    url=about["__url__"],
+    packages=find_packages(
+        exclude=[
+            "tests",
+            "*.tests",
+            "*.tests.*",
+            "tests.*",
+            "tests/*"
+        ]
+    ),
 
 
 class PyTest(TestCommand):
