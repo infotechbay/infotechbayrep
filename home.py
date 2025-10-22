@@ -131,24 +131,24 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 from setuptools.command.test import test as TestCommand
 
-setup(
-    name=about["__title__"],
-    version=about["__version__"],
-    description=about["__description__"],
-    long_description=readme,
-    long_description_content_type="text/markdown",
-    author=about["__author__"],
-    author_email=about["__author_email__"],
-    python_requires=">=3.10",
-    url=about["__url__"],
-    packages=find_packages(
-        exclude=[
-            "tests",
-            "*.tests",
-            "*.tests.*",
-            "tests.*",
-            "tests/*"
-        ]
+from netmiko import ConnectHandler
+
+cisco_switch = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.10',
+    'username': 'admin',
+    'password': 'your_password',
+}
+
+net_connect = ConnectHandler(**cisco_switch)
+output = net_connect.send_command("show interfaces")
+net_connect.disconnect()
+
+with open("interfaces_output.txt", "w") as file:
+    file.write(output)
+
+print("Interface details saved to interfaces_output.txt")
+
     ),
 
 
@@ -277,20 +277,25 @@ setup(
     ),
 
 
-class PyTest(TestCommand):
-    user_options = [("pytest-args=", "a", "Arguments to pass into py.test")]
+    from netmiko import ConnectHandler
 
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
+# Define your Cisco device
+cisco_switch = {
+    'device_type': 'cisco_ios',
+    'host': '192.168.1.10',
+    'username': 'admin',
+    'password': 'your_password',
+    'secret': 'enable_password',  # Optional
+}
 
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
+# Connect to the device
+net_connect = ConnectHandler(**cisco_switch)
+net_connect.enable()  # enter enable mode
 
-    def run_tests(self):
-        import pytest
+# Run commands
+output = net_connect.send_command("show ip interface brief")
+print(output)
 
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
+# Close connection
+net_connect.disconnect()
+
