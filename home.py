@@ -45,25 +45,14 @@ class UploadCommand(Command):
         except OSError:
             pass
 
-        self.status("Building Source and Wheel (universal) distribution…")
-        os.system("{0} setup.py sdist bdist_wheel --universal".format(sys.executable))
+    import random
 
-        self.status("Uploading the package to PyPI via Twine…")
-        os.system("twine upload dist/*")
+def roll_dice():
+    return random.randint(1, 6)
 
-        self.status("Pushing git tags…")
-        os.system("git tag v{0}".format(about["__version__"]))
-        os.system("git push --tags")
+for i in range(5):
+    print(f"Roll {i+1}: {roll_dice()}")
 
-        sys.exit()
-        
-        "License :: OSI Approved :: Apache Software License",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.10",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
-        "Intended Audience :: System Administrators",
     ],
     tests_require=test_requirements,
     # $ setup.py publish support.
@@ -200,12 +189,6 @@ class UploadCommand(Command):
 
         sys.exit()
 
-import os
-import sys
-from shutil import rmtree
-
-from setuptools import find_packages, setup, Command
-from setuptools.command.test import test as TestCommand
 
 setup(
     name=about["__title__"],
@@ -240,6 +223,22 @@ test_requirements = [
     "responses==0.21.0",
 ]
 
+from tkinter import *
+from time import strftime
+
+root = Tk()
+root.title("Digital Clock")
+
+def time():
+    string = strftime('%H:%M:%S %p')
+    label.config(text=string)
+    label.after(1000, time)
+
+label = Label(root, font=('calibri', 50, 'bold'), background='black', foreground='cyan')
+label.pack(anchor='center')
+
+time()
+root.mainloop()
 
 about = {}
 here = os.path.abspath(os.path.dirname(__file__))
