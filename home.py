@@ -255,43 +255,61 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 from setuptools.command.test import test as TestCommand
 
-setup(
-    name=about["__title__"],
-    version=about["__version__"],
-    description=about["__description__"],
-    long_description=readme,
-    long_description_content_type="text/markdown",
-    author=about["__author__"],
-    author_email=about["__author_email__"],
-    python_requires=">=3.10",
-    url=about["__url__"],
-    packages=find_packages(
-        exclude=[
-            "tests",
-            "*.tests",
-            "*.tests.*",
-            "tests.*",
-            "tests/*"
-        ]
-    ),
+import random
+import json
 
+FILE = "scores.json"
 
-    from netmiko import ConnectHandler
+def load_scores():
+    try:
+        with open(FILE, "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return {}
 
-# Define your Cisco device
-cisco_switch = {
-    'device_type': 'cisco_ios',
-    'host': '192.168.1.10',
-    'username': 'admin',
-    'password': 'your_password',
-    'secret': 'enable_password',  # Optional
-}
+def save_scores(scores):
+    with open(FILE, "w") as f:
+        json.dump(scores, f, indent=4)
 
-# Connect to the device
-net_connect = ConnectHandler(**cisco_switch)
-net_connect.enable()  # enter enable mode
+def play_game():
+    number = random.randint(1, 100)
+    attempts = 0
 
-# Run commands
+    print("\n🎯 Welcome to the Number Guessing Game!")
+    print("I'm thinking of a number between 1 and 100.")
+
+    while True:
+        guess = input("Enter your guess: ")
+        if not guess.isdigit():
+            print("Please enter a valid number.")
+            continue
+        guess = int(guess)
+        attempts += 1
+
+        if guess < number:
+            print("Too low!")
+        elif guess > number:
+            print("Too high!")
+        else:
+            print(f"🎉 Correct! You guessed it in {attempts} tries.\n")
+            return attempts
+
+def main():
+    name = input("Enter your name: ")
+    scores = load_scores()
+
+    attempts = play_game()
+
+    if name not in scores or attempts < scores[name]:
+        scores[name] = attempts
+        save_scores(scores)
+        print(f"🏆 New personal best, {name}! Saved your score.\n")
+    else:
+        print(f"Your best record is {scores[name]} tries.\n")
+
+if __name__ == "__main__":
+    main()
+
 output = net_connect.send_command("show ip interface brief")
 print(output)
 
