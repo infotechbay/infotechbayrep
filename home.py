@@ -239,21 +239,16 @@ label.pack(anchor='center')
 
 time()
 root.mainloop()
+import requests
 
-about = {}
-here = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(here, "pbipy", "__version__.py"), "r", encoding="utf-8") as f:
-    exec(f.read(), about)
+city = "London"
+url = f"https://api.open-meteo.com/v1/forecast?latitude=51.5072&longitude=-0.1276&current_weather=true"
 
-with open("README.md", "r", encoding="utf-") as f:
-    readme = f.read()
+res = requests.get(url)
+data = res.json()
+print("Temperature:", data['current_weather']['temperature'], "°C")
+print("Wind speed:", data['current_weather']['windspeed'], "km/h")
 
-import os
-import sys
-from shutil import rmtree
-
-from setuptools import find_packages, setup, Command
-from setuptools.command.test import test as TestCommand
 
 import random
 import json
@@ -292,27 +287,19 @@ def play_game():
             print("Too high!")
         else:
             print(f"🎉 Correct! You guessed it in {attempts} tries.\n")
-            return attempts
+    import random
 
-def main():
-    name = input("Enter your name: ")
-    scores = load_scores()
+num = random.randint(1, 100)
+attempts = 0
 
-    attempts = play_game()
-
-    if name not in scores or attempts < scores[name]:
-        scores[name] = attempts
-        save_scores(scores)
-        print(f"🏆 New personal best, {name}! Saved your score.\n")
+while True:
+    guess = int(input("Guess a number (1–100): "))
+    attempts += 1
+    if guess < num:
+        print("Too low!")
+    elif guess > num:
+        print("Too high!")
     else:
-        print(f"Your best record is {scores[name]} tries.\n")
-
-if __name__ == "__main__":
-    main()
-
-output = net_connect.send_command("show ip interface brief")
-print(output)
-
-# Close connection
-net_connect.disconnect()
+        print(f"🎉 Correct! You guessed it in {attempts} tries.")
+        break
 
