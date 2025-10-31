@@ -1,39 +1,40 @@
-!/usr/bin/env python
--*- coding: utf-8 -*-
+tasks = []
 
+def show_menu():
+    print("\n--- TO-DO LIST ---")
+    print("1. View tasks")
+    print("2. Add task")
+    print("3. Remove task")
+    print("4. Exit")
 
-install_requires=requires,
-    extras_require=extras,
-    include_package_data=True,
-    license=about["__license__"],
-    classifiers=[
-        Trove classifiers
+while True:
+    show_menu()
+    choice = input("Enter your choice: ")
 
-requires = [
-    "python-dateutil==2.8.2",
-    "requests>=2.28.1",
-]
+    if choice == "1":
+        if tasks:
+            print("\nYour tasks:")
+            for idx, task in enumerate(tasks, 1):
+                print(f"{idx}. {task}")
+        else:
+            print("No tasks yet.")
+    elif choice == "2":
+        task = input("Enter task: ")
+        tasks.append(task)
+        print("Task added.")
+    elif choice == "3":
+        task_num = int(input("Enter task number to remove: "))
+        if 0 < task_num <= len(tasks):
+            removed = tasks.pop(task_num - 1)
+            print(f"Removed: {removed}")
+        else:
+            print("Invalid task number.")
+    elif choice == "4":
+        print("Exiting...")
+        break
+    else:
+        print("Invalid choice. Try again.")
 
-extras = {"dev":["black"]}
-
-test_requirements = [
-    "pytest==7.1.3",
-    "responses==0.21.0",
-]
-
-class UploadCommand(Command):
-    """Support setup.py upload."""
-
-    description = "Build and publish the package."
-    user_options = []
-
-    @staticmethod
-    def status(s):
-        """Prints things in bold."""
-        print("\033[1m{0}\033[0m".format(s))
-
-    def initialize_options(self):
-        pass
 
     def finalize_options(self):
         pass
