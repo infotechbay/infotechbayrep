@@ -1,39 +1,18 @@
-tasks = []
+import paramiko
 
-def show_menu():
-    print("\n--- TO-DO LIST ---")
-    print("1. View tasks")
-    print("2. Add task")
-    print("3. Remove task")
-    print("4. Exit")
+ip = "192.168.1.1"
+username = "admin"
+password = "cisco"
 
-while True:
-    show_menu()
-    choice = input("Enter your choice: ")
+ssh = paramiko.SSHClient()
+ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+ssh.connect(ip, username=username, password=password)
 
-    if choice == "1":
-        if tasks:
-            print("\nYour tasks:")
-            for idx, task in enumerate(tasks, 1):
-                print(f"{idx}. {task}")
-        else:
-            print("No tasks yet.")
-    elif choice == "2":
-        task = input("Enter task: ")
-        tasks.append(task)
-        print("Task added.")
-    elif choice == "3":
-        task_num = int(input("Enter task number to remove: "))
-        if 0 < task_num <= len(tasks):
-            removed = tasks.pop(task_num - 1)
-            print(f"Removed: {removed}")
-        else:
-            print("Invalid task number.")
-    elif choice == "4":
-        print("Exiting...")
-        break
-    else:
-        print("Invalid choice. Try again.")
+stdin, stdout, stderr = ssh.exec_command("show ip interface brief")
+print(stdout.read().decode())
+
+ssh.close()
+
 
 
     def finalize_options(self):
