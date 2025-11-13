@@ -3,6 +3,20 @@ import paramiko
 ip = "192.168.1.1"
 username = "admin"
 password = "cisco"
+a = float(input("Enter first number: "))
+b = float(input("Enter second number: "))
+op = input("Choose (+, -, *, /): ")
+
+if op == "+":
+    print(a + b)
+elif op == "-":
+    print(a - b)
+elif op == "*":
+    print(a * b)
+elif op == "/":
+    print(a / b if b != 0 else "Cannot divide by zero")
+else:
+    print("Invalid operator")
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
