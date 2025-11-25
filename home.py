@@ -1,22 +1,18 @@
-import paramiko
+from netmiko import ConnectHandler
 
-ip = "192.168.1.1"
-username = "admin"
-password = "cisco"
-a = float(input("Enter first number: "))
-b = float(input("Enter second number: "))
-op = input("Choose (+, -, *, /): ")
+cisco_device = {
+    "device_type": "cisco_ios",
+    "host": "10.10.10.1",
+    "username": "admin",
+    "password": "password123",
+    "secret": "password123"
+}
 
-if op == "+":
-    print(a + b)
-elif op == "-":
-    print(a - b)
-elif op == "*":
-    print(a * b)
-elif op == "/":
-    print(a / b if b != 0 else "Cannot divide by zero")
-else:
-    print("Invalid operator")
+net_connect = ConnectHandler(**cisco_device)
+net_connect.enable()
+
+output = net_connect.send_command("show ip interface brief")
+print(output)
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
