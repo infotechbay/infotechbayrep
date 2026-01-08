@@ -1,3 +1,48 @@
+FILENAME = "tasks.txt"
+
+def load_tasks():
+    try:
+        with open(FILENAME, "r") as f:
+            return [task.strip() for task in f.readlines()]
+    except FileNotFoundError:
+        return []
+
+def save_tasks(tasks):
+    with open(FILENAME, "w") as f:
+        for task in tasks:
+            f.write(task + "\n")
+
+tasks = load_tasks()
+
+while True:
+    print("\n📋 TO-DO LIST")
+    print("1. View Tasks")
+    print("2. Add Task")
+    print("3. Remove Task")
+    print("4. Exit")
+
+    choice = input("Choose: ")
+
+    if choice == "1":
+        for i, task in enumerate(tasks, 1):
+            print(f"{i}. {task}")
+
+    elif choice == "2":
+        task = input("Enter new task: ")
+        tasks.append(task)
+        save_tasks(tasks)
+
+    elif choice == "3":
+        index = int(input("Enter task number to remove: ")) - 1
+        if 0 <= index < len(tasks):
+            tasks.pop(index)
+            save_tasks(tasks)
+        else:
+            print("Invalid task number")
+
+    elif choice == "4":
+        break
+
 import random
 import time
 
